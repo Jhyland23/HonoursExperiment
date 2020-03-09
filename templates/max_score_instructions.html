@@ -1,0 +1,80 @@
+<html>
+<link rel="stylesheet" type="text/css" href="../../static/main.css">
+
+<h1>Instructions</h1>
+<div>
+  This is a game where you are trying to get as many points as possible, by <b>selecting vertical bars with the greatest combined height</b>.
+  <p>At the beginning of the game, the height of each bar is hidden.
+  <br>Once you select a bar, its height will be revealed.
+  <br>You select a bar by clicking on it twice. The first time you click, it will be outlined in red.
+  <br>Click again to submit your selection. You will earn points equal to its height, added to your total score.
+  <br><b>You can select the same bar multiple times</b>
+
+  <p>You will have {{trials}} chances to select bars and increase your score.</p>
+
+  <h2>Example</h2>
+  
+  <p>The picture below shows an example with three bars.
+  <p>The player first selected the middle bar, and got 100 points.
+  <br>Next, the player selected the right bar, and got another 200 points.
+  Your score is based <b>on the all of the bars you select.</b>
+
+</div>
+<br>
+
+<div class="container">
+<p>Total Score: 0 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Total Score: 0 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar focus" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Total Score: 100 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar focus selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Total Score: 100 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar focus" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Total Score: 300 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar focus selected" height="250" width="15"></canvas>
+</div>
+<br>
+<h2>Bonus</h2>
+<div>
+  <p>You will receive a bonus proportional to the total number of points you earn in the game, up to $0.75.<br>For example, if you earn 2/3 of the maximum possible number of points for the game, you will receive 2/3 of $0.75, or $0.50.
+  <br>If your performance is worse than it would be by random guessing, your HIT may be rejected.
+</div>
+<br>
+<div>
+Press Space to begin.
+</div>
+
+<script type="text/javascript" src="../../static/init_bars.js"></script>
+<script>
+
+function submit(event){
+  if(event.keyCode == 32){
+    document.removeEventListener("keydown", submit);
+    nextPage();
+  }
+}
+
+init_bars([100,100,100,200]);
+document.addEventListener("keydown", submit);
+</script>
+<link rel="stylesheet" type="text/css" href="../../static/bar_style.css">
+</html>

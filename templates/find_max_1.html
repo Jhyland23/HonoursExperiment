@@ -1,0 +1,142 @@
+<html>
+<link rel="stylesheet" type="text/css" href="../../static/main.css">
+
+<body>
+<div id="ui">
+
+<br>
+</div>
+<br>
+
+<canvas id="graident" width="150" height="200" style="border:1px solid #d3d3d3;">
+	The graident of currently selected bar</canvas>
+
+<div id="help">
+Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
+</div>
+<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
+<br>
+<div id="barContainer">
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="../static/init_bars.js"></script>
+<script>
+
+	for (var i; i<persistantData['nbars']; i++){
+		var tmp = document.createElement('canvas')
+		tmp.width=persistantData['bar_width']
+		tmp.height=persistantData['bar_height']
+		tmp.id='bar'+i
+		tmp.className='bar'
+		tmp.addEventListener('click',Click)
+		barContainer.appendChild(tmp)
+	}
+
+	init_bars([])
+	var trials=persistantData['trials']
+	var response=[]
+	var response_time=[]
+	var totalScore=0
+	var start_time=Date.now()
+	var clickedBars = []
+	var experiment_num = '1'
+
+	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+
+
+	document.getElementById('finishNow').addEventListener("click", finishEarly)
+
+	function Click(event){
+		var bar = event.target
+		var x=parseInt(bar.id.substring(3))
+
+		if(bar.className.indexOf("focus") > 0){
+			document.getElementById("help").innerHTML="Click any of the non-highlighted bars below once to highlight it. Click the same bar again to reveal its value. Clicking the bar that is currently highlighted once will do nothing besides using up a trial."
+		   	bar.className += " active"
+				clickedBars.push(x);
+	   		var score=persistantData['function'][experiment_num][x]
+	        Move(bar.height-score, x);
+	        Submit(x,score);
+					drawGrad(x);
+
+		}else{
+
+		    bars = document.getElementsByClassName("focus");
+	        document.getElementById("help").innerHTML="Click the highlighted bar again to reveal its value. This value will be your new score if it is greater than your current score."
+	        for(var i=0; i<bars.length; i++){
+	            bars[i].className = bars[i].className.replace(" focus", "")
+	        }
+	        bar.className += " focus";
+					if(clickedBars.includes(x)){
+						console.log(x);
+						drawGrad(x);
+					}
+		}
+	}
+
+	function Move(ypos, xpos){
+	    bar = document.getElementsByClassName("focus")[0];
+	    ctx = bar.getContext("2d");
+	    ctx.fillStyle = "black"
+	    ctx.clearRect(0, 0, bar.width, bar.height);
+	    ctx.fillRect(0, ypos, 15, bar.height);
+	}
+
+	function Submit(x,score){
+		console.log(score)
+		response.push(x)
+		response_time.push(Date.now())
+		totalScore=Math.max(totalScore,score)
+		trials-=1
+		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+		if(trials<=0){
+			results[currentGoalIndex]['start_time']=start_time
+			results[currentGoalIndex]['response']=response
+			results[currentGoalIndex]['response_time']=response_time
+			results[currentGoalIndex]['total_score']=totalScore
+			nextPage()
+			}
+	}
+	function drawGrad(x){
+		var c = document.getElementById("graident");
+		var ctx = c.getContext("2d");
+		ctx.clearRect(0, 0, c.width, c.height);
+
+		ctx.fillStyle = "black";
+		ctx.fillRect(30, 60, c.width-60, c.height);
+
+		ctx.restore();
+		var center = 55;
+		equation = '(-(0.002*x)^2 +1.6*(0.002*x)^1.5)*650';
+		grads = persistantData['grad'][experiment_num];
+		grad = grads[x];
+		console.log(grad, x);
+		ctx.beginPath();
+		ctx.moveTo(75, 60);
+		ctx.strokeStyle = "#FF0000";
+		ctx.lineTo(75+center,60-(grad*55));
+		ctx.lineTo(75-center,60+(grad*55));
+
+		ctx.stroke();
+		}
+
+	function finishEarly(){
+				results[currentGoalIndex]['start_time']=start_time
+				results[currentGoalIndex]['response']=response
+				results[currentGoalIndex]['response_time']=response_time
+				results[currentGoalIndex]['total_score']=totalScore
+				results[currentGoalIndex]['trials_remaining']=trials
+				nextPage()
+	}
+
+
+
+</script>
+<link rel="stylesheet" type="text/css" href="../static/bar_style.css">
+
+</body>
+</html>

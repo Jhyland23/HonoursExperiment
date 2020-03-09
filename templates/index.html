@@ -1,0 +1,109 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/init_bars.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/main.css">
+    <link rel="stylesheet" type="text/css" href="../static/bar_style.css">
+
+</head>
+
+<body><div id="contentContainer"></div></body>
+
+<script>
+    function generateUUID() {
+      var d = new Date().getTime();
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = (d + Math.random()*16)%16 | 0;
+          d = Math.floor(d/16);
+          return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+      });
+    return uuid;
+  };
+
+    function nextPage(){
+        if(pages[currentPageIndex]=='start.html'){
+          persistantData['sessionId']=generateUUID()
+        }
+        currentPageIndex++;
+        if(pages.length > currentPageIndex){
+            loadPage(pages[currentPageIndex]);
+        }
+    }
+
+    function loadPage(location){
+        console.log("attempting to load page: " + location)
+        contentContainer.innerHTML = "";
+        $.ajax({
+            method:"GET",
+            url:"/",
+            data:{"location":location},
+            success:function(resp){
+                contentContainer.innerHTML = resp;
+                var scriptElements = contentContainer.getElementsByTagName('script');
+                for(var i=0; i<scriptElements.length; i++){
+                    eval(scriptElements[i].innerHTML);
+                }
+            },
+            error:function(resp){
+                alert("Error fetching experiment - " + resp);
+            }
+        });
+    }
+
+
+  function getMaxScore(goalIndex){
+      var goal=persistantData['goals'][goalIndex]
+      var functionMax=Math.max(...persistantData['function'])
+      console.log(functionMax)
+      if(goal.indexOf('find_max')!=-1){
+        return functionMax
+      }else if(goal.indexOf('max_score')!=-1){
+        return functionMax*persistantData['trials']
+      }else if(goal.indexOf('min_error')!=-1){
+        console.log(functionMax)
+        return functionMax*persistantData['predict_trials']
+      }
+  }
+</script>
+
+<script>
+    var currentPageIndex = -1;
+    var currentGoalIndex = -1
+    var results = []
+
+    var persistantData = {
+                          'somataSessionId': '{{somataSessionId}}',
+                          'training_trials':{{training_trials}},
+                          'function_samples':{{function_samples|safe}},
+                          'training_start_time':0,
+                          'training_response_times':[],
+                          'function':{{function}},
+                          'grad':{{grad}},
+                          'task':{{task|safe}},
+                          'experiment':'{{experiment}}',
+                          'version':'{{version}}',
+                          'function_name':'{{function_name}}',
+                          'goals':{{goals|safe}},
+                          'bar_height':{{bar_height}},
+                          'bar_width':{{bar_width}},
+                          'nbars':{{nbars}},
+                          'trials':{{trials}},
+                          'predict_trials':{{predict_trials}},
+                          'se_length':{{se_length}},
+                          'sinc_offset':{{sinc_offset}},
+                          'neg_quad_offset':{{neg_quad_offset}},
+                          'pos_quad_offset':{{pos_quad_offset}}
+                          }
+
+    //persistantData['function_max']=Math.max(...persistantData['function'])
+    console.log(persistantData['goals'].length)
+    for (var i=0; i<persistantData['goals'].length; i++){
+        results.push({'goal':persistantData['goals'][i], 'index':i})// 'max_score':getMaxScore(i)})
+    }
+    var pages = persistantData['task']
+    nextPage()
+</script>
+
+
+</html>

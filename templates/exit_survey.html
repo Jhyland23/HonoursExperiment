@@ -1,0 +1,179 @@
+<html>
+<link rel="stylesheet" type="text/css" href="../../static/main.css">
+<!-- Flask/jinja-based repair of empty strings may be redundant with Brian's earlier fix, but shouldn't cause any harm. -->
+<script>
+var dataToSave = {
+  sessionId:"{{id}}",
+  function_name:"{{function_name}}",
+  goal:"{{goal}}",
+  function:{{function}},
+  max_score:{{max_score}},
+  test_response:{{test_response}},
+  test_start_time:{{test_start_time}},
+  test_response_time:{{test_response_time}},
+  predict_prompt:{% if predict_prompt=='' %}null{% else %}{{predict_prompt}}{%endif %},
+  predict_response:{% if predict_response=='' %}null{% else %}{{predict_response}}{%endif %},
+  predict_start_time:{% if predict_start_time=='' %}null{% else %}{{predict_start_time}}{%endif %},
+  predict_response_time: {% if predict_response_time=='' %}null{% else %}{{predict_response_time}}{%endif %},
+  final_score:{{final_score}},
+  max_total_score:{{max_total_score}},
+  max_height:{{max_height}},
+  bar_width:{{bar_width}},
+  number_of_bars:{{number_of_bars}},
+  plot_width:{{plot_width}},
+  experiment:"{{experiment}}",
+  experimentVersion:"{{version}}",
+  se_function_lengthscale:{{se_function_lengthscale}},
+  describe_goal_pre:"{{describe_goal_pre}}",
+};
+console.log(dataToSave);
+</script>
+<style>
+div.qDiv { margin-top: 20px }
+</style>
+<form id="data">
+<div class="qDiv">
+What is your age? Choose "NA" if you prefer not to say.
+<br>
+<select name="age" id="age"></select>
+</div>
+<div class="qDiv">
+  <!-- CL: This hard-coding of the labels isn't ideal, but I'm not familiar with flask and the javascript approach makes inspection/debugging more annoying -->
+What was the goal of the game?
+  <br>
+  <input type="radio" name="describe_goal"  id="r0"  value="I don't know"/
+    ><label for="r0">I don't know</label><br>
+  <input type="radio" name="describe_goal"  id="r1"  value="To find the bar with the greatest height" />
+    <label for="r1">To find the bar with the greatest height</label><br>
+  <input type="radio" name="describe_goal"  id="r2"  value="To select bars with greatest combined height, possibly selecting bars more than once" />
+    <label for="r2">To select bars with greatest combined height, possibly selecting bars more than once</label><br>
+  <input type="radio" name="describe_goal"  id="r3"  value="To select bars with greatest combined height, selecting each bar only once" />
+    <label for="r3">To select bars with greatest combined height, selecting each bar only once</label><br>
+  <input type="radio" name="describe_goal"  id="r4"  value="To accurately predict what a bar's height will be"/>
+    <label for="r4">To accurately predict what a bar's height will be</label><br>
+  <input type="radio" name="describe_goal"  id="r5"  value="To get the smallest number of points" />
+    <label for="r5">To get the smallest number of points</label><br>
+  <!-- <textarea name="describe_goal"></textarea> -->
+</div>
+<div id="describe_strategy" class="qDiv">
+</div>
+<div id="describe_strategy_phase2" class="qDiv">
+What was your strategy in playing the second part of the game?
+<br>
+<textarea name="describe_strategy_phase2"></textarea>
+</div>
+<div class="qDiv">
+Was anything unclear or confusing about the game?
+<br>
+<textarea name="describe_unclear"></textarea>
+</div>
+</form>
+<div id="buttondiv">
+  <button onclick="return log()">Submit</button>
+  <p id="agePrompt" style="display:none; color:red;">Please select your age</p>
+  <p id="goalPrompt" style="display:none; color:red">Please select the goal of the game</p>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+var describe = document.getElementById('describe_strategy')
+if ('{{goal}}' == 'min_error'){
+  describe.innerHTML = 'What was your strategy in playing the first part of the game?'
+  var input = document.createElement("textarea");
+}else{
+  describe.innerHTML = 'What was your strategy in playing the game?'
+  document.getElementById('describe_strategy_phase2').style.display="none"
+}
+var linebreak = document.createElement("br")
+var input = document.createElement("textarea")
+input.name = 'describe_strategy'
+describe.appendChild(linebreak)
+describe.appendChild(input)
+
+// For testing, use localhost where possible
+var wso = new WebSocket("ws://somata.inf.ed.ac.uk/chunks/ws");
+var wsError = 0; // Keeps track of whether any websocket errors have occurred
+var doneState = 0;
+var wsMessageCode = "N00";
+wso.onopen = function() {
+  /* Send a small message to the console once the connection is established */
+  console.log('chunk ws connection open.');
+}
+
+wso.onmessage = function(event) {
+  message = JSON.parse(event.data);
+  console.log('received websocket message: ' + event.data);
+  wsMessageCode = "Y"+wsError+"-"+message.status.substring(0,2);
+  if(doneState == 1) {document.getElementById("buttondiv").innerHTML = "Thanks! You're all done. Please submit the code " + wsMessageCode;}
+}
+
+wso.onerror = function(error){
+  console.log('websocket error detected: ' + JSON.stringify(error));
+  wsError = 1;
+}
+
+function sendData(dataChunk) {
+  dataChunk["experimentId"]="algoals";
+  // Added these elements in order to see if some participants are using windows that are too small, causing wraparound of the bars.
+  dataChunk["windowHeight"]=$(window).height();
+  dataChunk["windowWidth"]=$(window).width();
+
+
+  // isComplete allows the server to record completion, but is optional
+  dataChunk["isComplete"] = true;
+  var dataStr = JSON.stringify(dataChunk);
+  wso.send(dataStr);
+  doneState = 1;
+  // The getElementById should be overwritten almost immediately by the websocket return message
+  document.getElementById("buttondiv").innerHTML = "submitting (If submission doesn't complete in 10 seconds, please inform the requester)"
+  // Could wait to see if storage is successful, or jump immediately to a completion page. Doing nothing yet.
+  // window.location.href = "./code.html"
+}
+</script>
+
+<script type="text/javascript">
+$(function(){
+    var $select = $("#age");
+    $select.append('<option>--</option>')
+    for (i=18;i<=100;i++){
+        $select.append($('<option></option>').val(i).html(i))
+    }
+    $select.append('<option>NA</option>');
+});
+
+function checkAge(){
+      if (document.getElementById("age").value == '--'){
+        document.getElementById("agePrompt").style.display='block'
+        return false
+      }else{
+        document.getElementById("agePrompt").style.display='none'
+        return true
+      }
+}
+
+function checkGoal(){
+      if ($('input[name=describe_goal]:checked').length > 0){
+          document.getElementById("goalPrompt").style.display='none'
+          return true
+      }else{
+          document.getElementById("goalPrompt").style.display='block'
+          return false
+      }
+}
+
+function log(){
+      isCheckAge=checkAge()
+      isCheckGoal=checkGoal()
+      if (isCheckAge && isCheckGoal){
+          var formArray=$("#data").serializeArray()
+          for (var i = 0; i < formArray.length; i++){
+    	       dataToSave[formArray[i]['name']] = formArray[i]['value'];
+          }
+          sendData(dataToSave);
+      }
+}
+
+
+</script>
+</html>
