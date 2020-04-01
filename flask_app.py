@@ -21,17 +21,15 @@ data_path='data.json'
 #This is loading in all the the functions, So i can change these for my needs
 path=os.path.dirname(os.path.realpath(__file__))
 data_path=path+'/'+data_path
-with open(path+'/'+'{0}_{1}_functions.json'.format(config.experiment,config.version)) as json_data: # I think these are the X values!
-    functions=json.load(json_data)
-    json_data.close()
+
 
 #Load in the y values
-with open(path+'/fun1.json') as f:
+with open(path+'/yValues.json') as f:
     train_fun1 = json.load(f)
     f.close()
 training_trials = 1
-experiements = 3
-function_samples = {'fun1':train_fun1} #'pos_linear':train_lin, 'neg_quad':train_negquad, 'sinc_compressed':train_sinc}
+experiements = 7
+function_samples = train_fun1
 
 
 with open(path+'/gradValues.json') as f: #add the rest in here
@@ -39,7 +37,7 @@ with open(path+'/gradValues.json') as f: #add the rest in here
     f.close()
 
 grads = {}
-for i in range(0,4):
+for i in range(0,experiements):
     grads[i] = grad_fun1[str(i)]
 
 
@@ -69,15 +67,15 @@ def start():
         function_name=function_names[fi]
         goals=tasks[ti]
         functions = {}
-        for i in range(experiements):
-            functions[i+1] = function_samples[function_name][str(i+1)]
+        for i in range(0,experiements - 1):
+            functions[i+1] = function_samples[str(i+1)]
         #function=function_samples[function_name]#[training_trials]
         task=['start.html']+[a for b in [task_files[t] for t in goals] for a in b]+['last_page.html']
         
         all_args={
                  'somataSessionId':somataSessionId,
                  'training_trials':training_trials,
-                 'function_samples':{i: function_samples[function_name][str(i)] for i in range(training_trials)},
+                 'function_samples':{i: function_samples[str(i)] for i in range(training_trials)},
                  'function':functions,
                  'grad': grads, #MAKE BETTER
                  'task':task,

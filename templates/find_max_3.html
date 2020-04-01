@@ -7,20 +7,14 @@
 <br>
 </div>
 <br>
-
-<canvas id="graident" width="150" height="200" style="border:1px solid #d3d3d3;">
-	The graident of currently selected bar</canvas>
-
 <div id="help">
 Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
 </div>
+
 <button id='finishNow'>Think you've found the Maximum? Go to next task</button>
 <br>
 <div id="barContainer">
 </div>
-
-
-
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="../static/init_bars.js"></script>
@@ -44,6 +38,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	var start_time=Date.now()
 	var clickedBars = []
 	var experiment_num = '3'
+
 	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
 
 
@@ -60,7 +55,6 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	   		var score=persistantData['function'][experiment_num][x]
 	        Move(bar.height-score, x);
 	        Submit(x,score);
-					drawGrad(x);
 
 		}else{
 
@@ -72,7 +66,6 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	        bar.className += " focus";
 					if(clickedBars.includes(x)){
 						console.log(x);
-						drawGrad(x);
 					}
 		}
 	}
@@ -100,29 +93,6 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 			nextPage()
 			}
 	}
-	function drawGrad(x){
-		var c = document.getElementById("graident");
-		var ctx = c.getContext("2d");
-		ctx.clearRect(0, 0, c.width, c.height);
-
-		ctx.fillStyle = "black";
-		ctx.fillRect(30, 60, c.width-60, c.height);
-
-		ctx.restore();
-		var center = 55;
-		equation = '(-(0.002*x)^2 +1.6*(0.002*x)^1.5)*650';
-		grads = persistantData['grad'][experiment_num
-		];
-		grad = grads[x];
-		console.log(grad, x);
-		ctx.beginPath();
-		ctx.moveTo(75, 60);
-		ctx.strokeStyle = "#FF0000";
-		ctx.lineTo(75+center,60-(grad*55));
-		ctx.lineTo(75-center,60+(grad*55));
-
-		ctx.stroke();
-		}
 
 	function finishEarly(){
 				results[currentGoalIndex]['start_time']=start_time

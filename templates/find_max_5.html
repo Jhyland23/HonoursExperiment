@@ -37,7 +37,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	var totalScore=0
 	var start_time=Date.now()
 	var clickedBars = []
-	var experiment_num = '1'
+	var experiment_num = '5'
 
 	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
 
@@ -93,7 +93,6 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 			nextPage()
 			}
 	}
-
 
 	function finishEarly(){
 				results[currentGoalIndex]['start_time']=start_time

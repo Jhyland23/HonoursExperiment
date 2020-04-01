@@ -2,25 +2,31 @@
 <link rel="stylesheet" type="text/css" href="../../static/main.css">
 
 <body>
-<div id="ui">
 
-<br>
-</div>
-<br>
-<div id="help">
-Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
-</div>
+<div class="wrapper" style="margin: 0 auto; width:1500px; position: relative;">
 
-<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
-<br>
+	<canvas id="graident" width="200" height="200" align="center" style="border:1px solid #d3d3d3;">
+	</canvas>
+	<h4 id="canvastext"> Gradient at selected point </h4>
+	<div class="controls" style="position: absolute; top:0; left:240;">
+		<div id="ui"></div>
+		<br>
+		<div id="help">
+		<br>Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
+		</div>
+		<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
+	</div>
+
+</div>
 <div id="barContainer">
 </div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="../static/init_bars.js"></script>
 <script>
 
-	for (var i; i<persistantData['nbars']; i++){
+	for (var i = 0; i<persistantData['nbars']; i++){
 		var tmp = document.createElement('canvas')
 		tmp.width=persistantData['bar_width']
 		tmp.height=persistantData['bar_height']
@@ -37,7 +43,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	var totalScore=0
 	var start_time=Date.now()
 	var clickedBars = []
-	var experiment_num = '1'
+	var experiment_num = '4'
 
 	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
 
@@ -49,12 +55,13 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 		var x=parseInt(bar.id.substring(3))
 
 		if(bar.className.indexOf("focus") > 0){
-			document.getElementById("help").innerHTML="Click any of the non-highlighted bars below once to highlight it. Click the same bar again to reveal its value. Clicking the bar that is currently highlighted once will do nothing besides using up a trial."
+			document.getElementById("help").innerHTML="Click any of the non-highlighted bars below once to highlight it. Click the same bar again to reveal its value. "
 		   	bar.className += " active"
 				clickedBars.push(x);
 	   		var score=persistantData['function'][experiment_num][x]
 	        Move(bar.height-score, x);
 	        Submit(x,score);
+					drawGrad(x);
 
 		}else{
 
@@ -66,6 +73,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	        bar.className += " focus";
 					if(clickedBars.includes(x)){
 						console.log(x);
+						drawGrad(x);
 					}
 		}
 	}
@@ -93,7 +101,28 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 			nextPage()
 			}
 	}
+	function drawGrad(x){
+		var c = document.getElementById("graident");
+		var ctx = c.getContext("2d");
+		ctx.clearRect(0, 0, c.width, c.height);
 
+		ctx.fillStyle = "black";
+		ctx.fillRect(70, 100, c.width-140, c.height);
+
+		ctx.restore();
+		var movement = 60;
+		equation = '(-(0.002*x)^2 +1.6*(0.002*x)^1.5)*650';
+		grads = persistantData['grad'][experiment_num];
+		grad = grads[x];
+		console.log(grad, x);
+		ctx.beginPath();
+		ctx.moveTo(100, 100);
+		ctx.strokeStyle = "#FF0000";
+		ctx.lineTo(100+movement,100-(grad*movement));
+		ctx.lineTo(100-movement,100+(grad*movement));
+
+		ctx.stroke();
+		}
 
 	function finishEarly(){
 				results[currentGoalIndex]['start_time']=start_time
