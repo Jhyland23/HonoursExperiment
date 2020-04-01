@@ -11,7 +11,7 @@
 Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
 </div>
 
-<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
+<button id='finishNow'>Think you've found the Maximum? Go to next task</button><br>
 <br>
 <div id="barContainer">
 </div>
@@ -39,7 +39,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 	var clickedBars = []
 	var experiment_num = '1'
 
-	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 
 
 	document.getElementById('finishNow').addEventListener("click", finishEarly)
@@ -84,7 +84,7 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 		response_time.push(Date.now())
 		totalScore=Math.max(totalScore,score)
 		trials-=1
-		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 		if(trials<=0){
 			results[currentGoalIndex]['start_time']=start_time
 			results[currentGoalIndex]['response']=response

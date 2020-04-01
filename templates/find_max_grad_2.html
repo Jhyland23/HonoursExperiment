@@ -93,7 +93,7 @@
 		response_time.push(Date.now())
 		totalScore=Math.max(totalScore,score)
 		trials-=1
-		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 		if(trials<=0){
 			results[currentGoalIndex]['start_time']=start_time
 			results[currentGoalIndex]['response']=response
@@ -108,7 +108,7 @@
 		ctx.clearRect(0, 0, c.width, c.height);
 
 		ctx.fillStyle = "black";
-		ctx.fillRect(70, 100, c.width-140, c.height);
+		ctx.fillRect(50, 100, c.width-100, c.height);
 
 		ctx.restore();
 		var movement = 60;

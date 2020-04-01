@@ -90,7 +90,7 @@
 		response_time.push(Date.now())
 		totalScore=Math.max(totalScore,score)
 		trials-=1
-		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
+		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 		if(trials<=0){
 			results[currentGoalIndex]['start_time']=start_time
 			results[currentGoalIndex]['response']=response
@@ -99,30 +99,29 @@
 			nextPage()
 			}
 	}
+
 	function drawGrad(x){
 		var c = document.getElementById("graident");
 		var ctx = c.getContext("2d");
 		ctx.clearRect(0, 0, c.width, c.height);
 
 		ctx.fillStyle = "black";
-		ctx.fillRect(30, 60, c.width-60, c.height);
+		ctx.fillRect(50, 100, c.width-100, c.height);
 
 		ctx.restore();
-		var center = 55;
+		var movement = 60;
 		equation = '(-(0.002*x)^2 +1.6*(0.002*x)^1.5)*650';
-		grads = persistantData['grad'][experiment_num
-		];
+		grads = persistantData['grad'][experiment_num];
 		grad = grads[x];
 		console.log(grad, x);
 		ctx.beginPath();
-		ctx.moveTo(75, 60);
+		ctx.moveTo(100, 100);
 		ctx.strokeStyle = "#FF0000";
-		ctx.lineTo(75+center,60-(grad*55));
-		ctx.lineTo(75-center,60+(grad*55));
+		ctx.lineTo(100+movement,100-(grad*movement));
+		ctx.lineTo(100-movement,100+(grad*movement));
 
 		ctx.stroke();
 		}
-
 	function finishEarly(){
 				results[currentGoalIndex]['start_time']=start_time
 				results[currentGoalIndex]['response']=response
