@@ -58,20 +58,24 @@ def start():
         return ''
         
     else:
-        fi=int(request.args.get('fi'))
+        pi=int(request.args.get('pi'))
         ti=int(request.args.get('ti'))
         if 'sessionId' in request.args:
             somataSessionId = request.args.get('sessionId')
         else:
             somataSessionId = ''
-        function_name=function_names[fi]
+        #function_name=function_names[pi]
         goals=tasks[ti]
         functions = {}
         for i in range(0,experiements - 1):
             functions[i+1] = function_samples[str(i+1)]
         #function=function_samples[function_name]#[training_trials]
-        task=['start.html']+[a for b in [task_files[t] for t in goals] for a in b]+['last_page.html']
-        
+        instructions = [[['find_max_instructions_unpaid.html'],['find_max_instructions_paid.html']], [['find_max_instructions_grads_unpaid.html'],['find_max_instructions_grads_paid.html']]]
+        if pi == 1:
+            task=['start.html']+instructions[ti][1]+[a for b in [task_files[t] for t in goals] for a in b]+['last_page.html']
+        else:
+            task=['unpaid_start.html']+instructions[ti][0]+[a for b in [task_files[t] for t in goals] for a in b]+['last_page.html']
+
         all_args={
                  'somataSessionId':somataSessionId,
                  'training_trials':training_trials,
@@ -81,7 +85,7 @@ def start():
                  'task':task,
                  'experiment':config.experiment,
                  'version':config.version,
-                 'function_name':function_name,
+                 #'function_name':function_name,
                  'goals':goals,
                  'bar_height':config.bar_height,
                  'bar_width':config.bar_width,

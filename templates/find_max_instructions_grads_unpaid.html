@@ -1,0 +1,96 @@
+<html>
+<link rel="stylesheet" type="text/css" href="../../static/main.css">
+
+<div>
+  <h1>Aims </h1>
+  The aim of this game is to find the tallest bar in a hidden graph.
+  <br>Each time you click on a section of the hidden graph,this section will be revealed in the form of a black vertical bar.
+  <br><b>The taller this black bar is, the more points it is worth. </b>
+  <br>After a bar is clicked, a window at the top of the screen will also show the selected bar, with a red line equal to the graident of the graph at that point.
+  <br>There will be several rounds, each with the same objective, but a different hidden graph to find the tallest bar of.
+
+  <h2>Instructions</h2>
+  You select a section of the graph by clicking on it. The first time you click, it will be outlined in red.
+  <br>Click again to confirm your selection and a bar will be revealed in this section of the graph. The taller the bar the more points it is worth!
+  <br>Your score will be updated if you find a bar higher than any other you have seen so far.
+  <br>Highlighting a bar you have already selected will show its gradient, selecting it again will use up a trial and you wont earn any extra points.
+  <br><b>You can end the round once you think you have the highest score</b>, by clicking the button above the graph.
+  <p>You will have up to 25 chances per round to select bars to try and find the highest.
+  <br>For every one of the 25 selections you have remaining at the end of the round, you will earn a bonus point!
+  <br> Eg. Ending the round after selecting 10 different bars, with 15 selections remaining, will grant you 15 bonus points.
+
+<h2>Scoring example</h2>
+
+  <p>The picture below shows an example with three bars.
+  <p>The player first selected the middle bar, which would be worth 100 points.
+  <br>Next, the player selected the right bar, which would be worth 200 points.
+  <br>Next, the player selected the left bar. It is not the highest bar, so the score does not change.
+  <br>Your score is based <b>only on the highest bar that you select.</b>
+</div>
+<br>
+
+<div class="container">
+<p>Score: 0 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Score: 0 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar focus" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Score: 100 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar focus selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Score: 100 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar focus" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Score: 200 </p>
+<canvas id="bar1" class="bar" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar focus selected" height="250" width="15"></canvas>
+</div>
+
+<div class="container">
+<p>Score: 200 </p>
+<canvas id="bar1" class="bar focus" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar selected" height="250" width="15"></canvas>
+</div>
+<div class="container">
+<p>Score: 200 </p>
+<canvas id="bar1" class="bar focus selected" height="250" width="15">
+</canvas><canvas id="bar2" class="bar selected" height="250" width="15">
+</canvas><canvas id="bar3" class="bar selected" height="250" width="15"></canvas>
+</div>
+
+<br>
+<div>
+Press Space to begin
+</div>
+
+<script type="text/javascript" src="../../static/init_bars.js"></script>
+<script type="text/javascript" src="../../static/continue.js"></script>
+<script>
+
+function submit(event){
+  if(event.keyCode == 32){
+    document.removeEventListener("keydown", submit);
+    nextPage();
+  }
+}
+
+init_bars([100,100,100,200,100,200,50,100,200])
+document.addEventListener("keydown", submit);
+</script>
+<link rel="stylesheet" type="text/css" href="../../static/bar_style.css">
+</html>

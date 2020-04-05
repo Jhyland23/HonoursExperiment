@@ -92,10 +92,7 @@
 		trials-=1
 		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 		if(trials<=0){
-			results[currentGoalIndex]['start_time']=start_time
-			results[currentGoalIndex]['response']=response
-			results[currentGoalIndex]['response_time']=response_time
-			results[currentGoalIndex]['total_score']=totalScore
+			results[experiment_num]= [start_time, response, response_time, totalScore, trials]
 			nextPage()
 			}
 	}
@@ -122,11 +119,7 @@
 		ctx.stroke();
 		}
 	function finishEarly(){
-				results[currentGoalIndex]['start_time']=start_time
-				results[currentGoalIndex]['response']=response
-				results[currentGoalIndex]['response_time']=response_time
-				results[currentGoalIndex]['total_score']=totalScore
-				results[currentGoalIndex]['trials_remaining']=trials
+				results[experiment_num]= [start_time, response, response_time, totalScore, trials]
 				nextPage()
 	}
 

@@ -10,8 +10,9 @@
 <div id="help">
 Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
 </div>
-
-<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
+<div>
+<button id='finishNow'>Think you've found the Maximum? Go to next task</button><br>
+</div>
 <br>
 <div id="barContainer">
 </div>
@@ -80,27 +81,20 @@ Click one of the bars below once to highlight it. Click the same bar again to re
 
 	function Submit(x,score){
 		console.log(score)
-		response.push(x)
+		response.push([x, score])
 		response_time.push(Date.now())
 		totalScore=Math.max(totalScore,score)
 		trials-=1
 		document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)+"(+"+trials+" Bonus points)"
 		if(trials<=0){
-			results[currentGoalIndex]['start_time']=start_time
-			results[currentGoalIndex]['response']=response
-			results[currentGoalIndex]['response_time']=response_time
-			results[currentGoalIndex]['total_score']=totalScore
+			results[experiment_num]= [start_time, response, response_time, totalScore, trials]
 			nextPage()
 			}
 	}
 
 	function finishEarly(){
-				results[currentGoalIndex]['start_time']=start_time
-				results[currentGoalIndex]['response']=response
-				results[currentGoalIndex]['response_time']=response_time
-				results[currentGoalIndex]['total_score']=totalScore
-				results[currentGoalIndex]['trials_remaining']=trials
-				nextPage()
+			results[experiment_num]= [start_time, response, response_time, totalScore, trials]
+			nextPage()
 	}
 
 

@@ -29,6 +29,6 @@ task_files={
 '''
 
 task_files={
-       'find_max': ['find_max_instructions.html', 'goal_prompt.html', 'train_instructions.html','find_max_1.html','find_max_2.html','find_max_3.html','find_max_4.html','find_max_5.html','find_max_6.html','goal_describe_prompt.html'],
-       'find_max_grad': ['find_max_instructions_grads.html', 'goal_prompt.html', 'train_instructions.html','find_max_grad_1.html','find_max_grad_2.html','find_max_grad_3.html', 'find_max_grad_4.html','find_max_grad_5.html','find_max_grad_6.html','goal_describe_prompt.html']
+       'find_max': ['goal_prompt.html', 'train_instructions.html','find_max_1.html','find_max_2.html','find_max_3.html','find_max_4.html','find_max_5.html','find_max_6.html','goal_describe_prompt.html'],
+       'find_max_grad': ['goal_prompt.html', 'train_instructions.html','find_max_grad_1.html','find_max_grad_2.html','find_max_grad_3.html', 'find_max_grad_4.html','find_max_grad_5.html','find_max_grad_6.html','goal_describe_prompt.html']
 }
