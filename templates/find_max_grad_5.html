@@ -1,29 +1,44 @@
 <html>
 <link rel="stylesheet" type="text/css" href="../../static/main.css">
-
 <body>
+	<b>Gradient at selected bar</b>
+	<div class="wrapper" style="margin: 0 auto; width:1500px; position: relative;">
 
-<div class="wrapper" style="margin: 0 auto; width:1500px; position: relative;">
-
-	<canvas id="graident" width="200" height="200" align="center" style="border:1px solid #d3d3d3;">
-	</canvas>
-	<h4 id="canvastext"> Gradient at selected point </h4>
-	<div class="controls" style="position: absolute; top:0; left:240;">
-		<div id="ui"></div>
-		<br>
-		<div id="help">
-		<br>Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
+		<canvas id="graident" width="200" height="200" align="center" style="border:1px solid #d3d3d3;">
+		</canvas>
+		<div class="controls" style="position: absolute; top:0; left:240;">
+			<br>
+			<div id="ui"></div>
+			<div id="help">
+			Click one of the bars below once to highlight it. Click the same bar again to reveal its value.
+			</div>
+			<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
 		</div>
-		<button id='finishNow'>Think you've found the Maximum? Go to next task</button>
 	</div>
+	<div id="barContainer">
+	</div>
+	<canvas id="xaxis" width="1553" height="14">
 
-</div>
-<div id="barContainer">
-</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/init_bars.js"></script>
+	<script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="../static/init_bars.js"></script>
-<script>
+		var yaxis = document.createElement('canvas')
+		yaxis.height = persistantData['bar_height'] + 22
+		yaxis.width = 16
+		var ctx = yaxis.getContext('2d');
+
+		ctx.beginPath();
+		ctx.moveTo(8,persistantData['bar_height'] + 22);
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 3.75;
+		ctx.lineTo(8,6);
+		ctx.moveTo(8,4);
+		ctx.lineTo(3,15);
+		ctx.lineTo(13,15);
+		ctx.lineTo(8,4);
+		ctx.stroke();
+		barContainer.appendChild(yaxis)
 
 	for (var i = 0; i<persistantData['nbars']; i++){
 		var tmp = document.createElement('canvas')
@@ -35,6 +50,38 @@
 		barContainer.appendChild(tmp)
 	}
 
+	var xtraarrow = document.createElement('canvas')
+	xtraarrow.height = persistantData['bar_height']
+	xtraarrow.width = 8
+	var ctx = xtraarrow.getContext('2d');
+	ctx.beginPath();
+	ctx.moveTo(0,persistantData['bar_height']);
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.lineTo(0,persistantData['bar_height'] - 2 );
+	ctx.lineTo(4,persistantData['bar_height']);
+	ctx.lineTo(0,persistantData['bar_height']);
+	ctx.stroke();
+
+	barContainer.appendChild(xtraarrow)
+
+
+
+	var xaxis = document.getElementById("xaxis");
+	var ctx = xaxis.getContext('2d');
+	ctx.beginPath();
+	ctx.moveTo(8, 0);
+	ctx.strokeStyle = "black";
+	ctx.lineWidth = 4;
+	ctx.lineTo(8,4)
+	ctx.lineTo(1548,4);
+	ctx.moveTo(1549,4);
+	ctx.lineTo(1538,0);
+	ctx.lineTo(1538,10);
+	ctx.lineTo(1549,4);
+	ctx.stroke()
+
+
 	init_bars([])
 	var trials=persistantData['trials']
 	var response=[]
@@ -44,10 +91,7 @@
 	var clickedBars = []
 	var experiment_num = '5'
 
-
 	document.getElementById("ui").innerHTML="Trials Remaining: "+trials+"<br>Total Score: "+Math.round(totalScore)
-
-
 	document.getElementById('finishNow').addEventListener("click", finishEarly)
 
 	function Click(event){
