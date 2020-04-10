@@ -1,0 +1,47 @@
+<h2><span id="messageSpan" style="color: rgb(153, 51, 0);">You must have javascript enabled for this HIT to work. If you do, and still cannot see this HIT, please return it and inform the requester.</span></h2>
+
+<div height="100" id="messageDiv" width="98%">&nbsp;</div>
+
+<p><a href="..." id="hitLink" style="visibility:hidden" target="_blank">Click here to open the experiment in a new tab</a></p>
+
+<p id="finalBlurbP">The experiment will give you a code on the final page. Enter it below to complete the HIT. If you completed the survey but there was a problem and you did not receive a code, use the box to record what happened and what browser and version you are using. If you did not complete the experiment, please return the HIT.</p>
+
+<p><textarea cols="40" name="answer" rows="3"></textarea></p>
+
+<p id="commentP">If you have any additional comments, please share them below.</p>
+
+<p><textarea cols="40" name="comments" rows="3"></textarea></p>
+<script type="text/javascript">
+var messageDiv = document.getElementById('messageSpan');
+var finalBlurb = document.getElementById('finalBlurbP');
+messageDiv.innerHTML = '<b>In this experiment, TODO. Please read the
+instructions carefully. When you finish you will receive a secret code
+to enter in the answer box to complete the HIT.</b>';
+var mturkworkerID = "";
+var paramstr = window.location.search.substring(1);
+var parampairs = paramstr.split("&");
+for (i in parampairs) {
+   var pair = parampairs[i].split("=");
+   console.log("param pair: " + pair);
+   if (pair[0] == "workerId")
+     mturkworkerID = pair[1];
+}
+var debugMode = false;
+if (!debugMode && mturkworkerID == "" ) {
+   messageDiv.innerHTML =('The experiment link will appear here only if
+you accept this HIT. Please note that the experiment may not work with
+older version of internet explorer and some mobile browsers.');
+   finalBlurbP.innerHTML = ('The box below cannot be correctly submitted
+unless the HIT is accepted and the survey completed.');
+}
+else {
+var hitLink = document.getElementById('hitLink');
+var myURL =
+'http://somata.inf.ed.ac.uk/dispatch?experimentId=hyland_gradients_000&workerId='
++ mturkworkerID;
+
+
+hitLink.setAttribute('href',myURL);
+hitLink.style.visibility='visible';
+}
+</script>

@@ -23,7 +23,7 @@
 
     function nextPage(){
         if(pages[currentPageIndex]=='start.html'){
-          persistantData['sessionId']=generateUUID()
+          persistantData['localSessionId']=generateUUID()
         }
         currentPageIndex++;
         if(pages.length > currentPageIndex){
@@ -72,8 +72,8 @@
     var currentGoalIndex = -1
     var results = []
 
-    var persistantData = {
-                          'somataSessionId': '{{somataSessionId}}',
+    var persistantData = { // Using the somata-based session id as the default; plays nicer with other stuff
+                          'sessionId': '{{somataSessionId}}',
                           'training_trials':{{training_trials}},
                           'function_samples':{{function_samples|safe}},
                           'training_start_time':0,

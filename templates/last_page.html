@@ -1,21 +1,23 @@
 
 <html>
-<link rel="stylesheet" type="text/css" href="../../static/main.css">
+<head></head><link rel="stylesheet" type="text/css" href="../../static/main.css"></head>
+<body>
 <div id="postMessage">
 submitting (If submission doesn't complete in 10 seconds, please inform the requester)
 </div>
 <div id="Scores">
 Final scores for each round:
-</div>
-</html>
 
 <script type="text/javascript">
 
 persistantData['results']=results
-persistantData['complete']=true
+persistantData['isComplete']=true
+persistantData['experimentId']="hyland_gradients_000"
 console.log(persistantData)
 
 
+// Ajax post to localhost -- is there supposed to be something receiving this post and saving it? Currently throws internal server error.
+/*
 $.ajax({
         method:"post",
         url:"/",
@@ -29,8 +31,8 @@ $.ajax({
 			message(jqXHR.status)
   		}
     });
-
-function message(status){
+*/
+function finalReport(status) {
   document.getElementById("postMessage").innerHTML="Thanks! You're all done. Please submit the code " + status
   document.getElementById("Scores").innerHTML="Scores for each round: <br> 1) Max score: 517 | Your Score: " + Math.round(results[1][3] + results[1][4]) +
   "<br> 2) Max score: 488 | Your Score: " + Math.round(results[2][3] + results[2][4]) +
@@ -38,9 +40,44 @@ function message(status){
   "<br> 4) Max score: 464 | Your Score: " + Math.round(results[4][3] + results[4][4]) +
   "<br> 5) Max score: 494 | Your Score: " + Math.round(results[5][3] + results[5][4]) +
   "<br> 6) Max score: 513 | Your Score: " + Math.round(results[6][3] + results[6][4])
-
-
-
 }
 
+function sendData() {
+  console.log("Called sendData");
+  var wso = new WebSocket("wss://somata.inf.ed.ac.uk/chunks/ws");
+
+  function timeToSend() {
+    console.log("Called timeToSend");
+    wso.send(JSON.stringify(persistantData));
+    sentData=1;
+  }
+
+  var sentData = 0;
+  var wsError = 0; // Keeps track of whether any websocket errors have occurred
+  wso.onopen = function () {
+      /*Send a small message to the console once the connection is established */
+      console.log('chunk ws connection open; sending data.');
+      timeToSend();
+  }
+
+  wso.onmessage = function (event) {
+      message = JSON.parse(event.data);
+      console.log('webSocket message: ' + event.data);
+      if (sentData == 1) {
+        console.log("Data sent; error status="+wsError);
+        finalReport("1664"+event.data.length+"-"+wsError);
+          //document.getElementById("codediv").innerHTML = "The survey is now complete. Thank you for your participation. Your code is 8" + wsError + "-" + event.data.length;
+      }
+  }
+
+  wso.onerror = function (error) {
+      console.log('webSocket error detected: ' + JSON.stringify(error));
+      wsError = 1;
+  }  
+}
+
+  sendData();
 </script>
+</div>
+</body>
+</html>
